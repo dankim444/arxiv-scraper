@@ -16,3 +16,4 @@ RECIPIENT_EMAIL=
 ```
 4. choose keywords and set max_results
 5. run the script
+6. papers will be saved locally to file system and summaries will be sent via email. enjoy!
