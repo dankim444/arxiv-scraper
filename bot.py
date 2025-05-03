@@ -45,12 +45,14 @@ for keyword in KEYWORDS:
 
     for result in search.results():
         print(f"Found: {result.title}")
+        print("----------------")
 
         # download PDF
         pdf_url = result.pdf_url
         response = requests.get(pdf_url)
 
         print(f"Successfully retrieved: {result.pdf_url}")
+        print("----------------")
 
         safe_title = "".join(c for c in result.title if c.isalnum() or c in (' ', '_')).rstrip()
         pdf_filename = os.path.join(today_folder, f"{safe_title}.pdf")
@@ -59,6 +61,7 @@ for keyword in KEYWORDS:
             f.write(response.content)
         
         print(f"Successfully wrote to {pdf_filename}")
+        print("----------------")
 
         # summarize abstract
         prompt = f"Summarize the following paper abstract in 1-2 sentences:\n\n{result.summary}"
@@ -76,7 +79,7 @@ for keyword in KEYWORDS:
             ]
         )
         summary_text = response.output_text.strip()
-        summaries.append((result.title, summary_text))
+        summaries.append((result.title, summary_text, pdf_url))
 
         print(f"Successfully summarized {pdf_filename}")
 
@@ -88,7 +91,7 @@ msg['From'] = EMAIL_ADDRESS
 msg['To'] = RECIPIENT_EMAIL
 
 email_body = "Today's Papers:\n\n"
-for title, summary in summaries:
+for title, summary, pdf_url in summaries:
     email_body += f"📄 {title}\n{summary}\n{pdf_url}\n"
 
 msg.set_content(email_body)
